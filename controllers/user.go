@@ -52,6 +52,12 @@ type NameResp struct {
 	Data   interface{} `json:"data"`
 }
 
+type UserResp struct {
+	Errno  string      `json:"errno"`
+	Errmsg string      `json:"errmsg"`
+	Data   interface{} `json:"data"`
+}
+
 type UserController struct {
 	beego.Controller
 }
@@ -266,4 +272,38 @@ func (this *UserController) GetAvatar() {
 
 	resp.Data.Url = avatar_url
 	return
+}
+
+func (this *UserController) GetUser() {
+	beego.Debug("get /api/v1.0/user....")
+
+	resp := UserResp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
+
+	defer this.RetData(&resp)
+
+	//1. 从当前Session中得到当前客户端的user_id
+	user_id := this.GetSession("user_id")
+
+	//2.根据user_id 查找信息
+	o := orm.NewOrm()
+	user := models.User{Id: user_id.(int)}
+
+	err := o.Read(&user)
+
+	if err == orm.ErrNoRows {
+		beego.Debug("查询不到")
+		resp.Errno = models.RECODE_NODATA
+		resp.Errmsg = models.RecodeText(models.RECODE_NODATA)
+	} else if err == orm.ErrMissPK {
+		beego.Debug("找不到主键")
+		resp.Errno = models.RECODE_NODATA
+		resp.Errmsg = models.RecodeText(models.RECODE_NODATA)
+	} else {
+		resp.Data = user
+	}
+
+	this.SetSession("user_id", user_id)
+
+	return
+
 }

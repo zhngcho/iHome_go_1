@@ -20,4 +20,13 @@ func init() {
 	//上传文件头像
 	beego.Router("api/v1.0/user/avatar", &controllers.UserController{}, "post:GetAvatar")
 
+	//实名认证post
+	beego.Router("api/v1.0/user/auth", &controllers.AuthController{}, "post:UpdateAuth")
+
+	//实名认证校验get
+	beego.Router("api/v1.0/user/auth", &controllers.AuthController{}, "get:GetAuth")
+
+	//user
+	beego.Router("api/v1.0/user", &controllers.UserController{}, "get:GetUser")
+
 }

@@ -67,8 +67,9 @@ type HouseImage struct {
 	Url   string `orm:"size(256)" json:"url"`    //图片url
 	House *House `orm:"rel(fk)" json:"house_id"` //图片所属房屋编号
 }
-house := House{Id:1}
-houseImage:= HouseImage{Url:"group1..", &house}
+
+//house := House{Id:1}
+//houseImage:= HouseImage{Url:"group1..", &house}
 
 const (
 	ORDER_STATUS_WAIT_ACCEPT  = "WAIT_ACCEPT"  //待接单

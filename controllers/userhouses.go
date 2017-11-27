@@ -8,10 +8,26 @@ import (
 	//"path"
 )
 
+type HouseInfo struct {
+	Address     string `json:"address"`
+	Areaname    string `json:"area_name"`
+	Ctime       string `json:"ctime"`
+	House_id    int    `json:"house_id"`
+	Img_url     string `json:"img_url"`
+	Order_count int    `json:"order_count"`
+	Price       int    `json:"price"`
+	Room_count  int    `json:"room_count"`
+	Title       string `json:"title"`
+	User_avatar string `json:"user_avatar"`
+}
+
+type HousesInfo struct {
+	Houses []HouseInfo `json:"houses`
+}
 type UserHousesResp struct {
-	Errno  string      `json:"errno"`
-	Errmsg string      `json:"errmsg"`
-	Data   interface{} `json:"data"`
+	Errno  string     `json:"errno"`
+	Errmsg string     `json:"errmsg"`
+	Data   HousesInfo `json:"data"`
 }
 
 type UserHousesController struct {
@@ -47,7 +63,25 @@ func (this *UserHousesController) GetUserHouses() {
 
 	}
 
-	resp.Data = houses
+	var houses_info []HouseInfo
+
+	for _, value := range houses {
+		var house_info HouseInfo
+		house_info.Address = value.Address
+		house_info.Areaname = value.Area.Name
+		house_info.Ctime = value.Ctime.Format("2006-01-02 15:04:05")
+		house_info.House_id = value.Id
+		house_info.Img_url = value.Images[0].Url
+		house_info.Order_count = value.Order_count
+		house_info.Price = value.Price
+		house_info.Room_count = value.Room_count
+		house_info.Title = value.Title
+		house_info.User_avatar = value.User.Avatar_url
+
+		houses_info = append(houses_info, house_info)
+	}
+
+	resp.Data = HousesInfo{Houses: houses_info}
 
 	//更新Session
 	this.SetSession("user_id", user_id)

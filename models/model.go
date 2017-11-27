@@ -95,3 +95,20 @@ type OrderHouse struct {
 	Comment     string    `orm:"size(512)"`            //订单评论
 	Ctime       time.Time `orm:"auto_now_add;type(datetime)" json:"ctime"`
 }
+
+func (this *House) To_house_info() interface{} {
+	house_info := map[string]interface{}{
+		"house_id":    this.Id,
+		"title":       this.Title,
+		"price":       this.Price,
+		"area_name":   this.Area.Name,
+		"img_url":     AddDomain2Url(this.Index_image_url),
+		"room_count":  this.Room_count,
+		"order_count": this.Order_count,
+		"address":     this.Address,
+		"user_avatar": AddDomain2Url(this.User.Avatar_url),
+		"ctime":       this.Ctime.Format("2006-01-02 15:04:05"),
+	}
+
+	return house_info
+}

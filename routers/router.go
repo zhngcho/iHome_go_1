@@ -51,4 +51,7 @@ func init() {
 	// 上传房源图片
 	beego.Router("/api/v1.0/houses/:id([0-9])+/images", &controllers.HouseController{}, "post:Uplodpicture")
 
+	//获取房源详细信息
+	beego.Router("api/v1.0/houses/:id:int", &controllers.HouseDetailController{}, "get:GetHouseDetail")
+
 }

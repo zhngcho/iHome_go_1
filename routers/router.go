@@ -39,6 +39,9 @@ func init() {
 	//查看租客信息
 	//beego.Router("api/v1.0/user/orders?role=custom", &controllers.HouseController{}, "get:GetRenetrInfo")
 
+	// 发布房源信息
+	beego.Router("api/v1.0/houses", &controllers.HouseController{}, "post:NewHouse")
+
 	//退出
 	beego.Router("/api/v1.0/session", &controllers.HouseController{}, "delete:Delete")
 }

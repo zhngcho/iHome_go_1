@@ -9,6 +9,7 @@ import (
 	"github.com/astaxie/beego/orm"
 	"iHome_go_1/models"
 	//	"time"
+	"github.com/astaxie/beego/config"
 	"path"
 )
 
@@ -169,6 +170,23 @@ func (this *UserController) Login() {
 	return
 }
 
+/* 将url加上 http://IP:PROT/  前缀 */
+func AddDomain2Url(url string) (domain_url string) {
+	//从配置文件读取到port和addr
+	appconf, err := config.NewConfig("ini", "./conf/app.conf")
+	if err != nil {
+		beego.Debug(err)
+		return ""
+	}
+	port := appconf.String("httpport")
+	addr := appconf.String("httpaddr_ext")
+
+	//beego.Debug("port:", port, " addr:", addr)
+	domain_url = "http://" + addr + ":" + port + "/" + url
+
+	return domain_url
+}
+
 // api/v1.0/user/name [put]
 func (this *UserController) UpdateUsername() {
 	resp := NameResp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
@@ -268,7 +286,7 @@ func (this *UserController) GetAvatar() {
 	}
 
 	//拼接一个完整的路径
-	avatar_url := "http://101.200.170.171:8080/" + fileId
+	avatar_url := AddDomain2Url(fileId)
 
 	resp.Data.Url = avatar_url
 	return

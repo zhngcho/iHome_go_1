@@ -44,4 +44,11 @@ func init() {
 
 	//退出
 	beego.Router("/api/v1.0/session", &controllers.HouseController{}, "delete:Delete")
+
+	// 搜索房源
+	beego.Router("/api/v1.0/houses", &controllers.HouseController{}, "get:GetHouseInfo")
+
+	// 上传房源图片
+	beego.Router("/api/v1.0/houses/:id([0-9])+/images", &controllers.HouseController{}, "post:Uplodpicture")
+
 }

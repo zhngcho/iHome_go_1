@@ -29,4 +29,6 @@ func init() {
 	//user
 	beego.Router("api/v1.0/user", &controllers.UserController{}, "get:GetUser")
 
+	// 发布房源路由
+	beego.Router("api/v1.0/user/houses", &controllers.HouseController{}, "get:Gethouse")
 }

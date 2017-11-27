@@ -24,11 +24,15 @@ func init() {
 	beego.Router("api/v1.0/user/auth", &controllers.AuthController{}, "post:UpdateAuth")
 
 	//实名认证校验get
-	//	beego.Router("api/v1.0/user/auth", &controllers.AuthController{}, "get:GetAuth")
+	beego.Router("api/v1.0/user/auth", &controllers.AuthController{}, "get:GetAuth")
 
 	//user
 	beego.Router("api/v1.0/user", &controllers.UserController{}, "get:GetUser")
 
+	//get用户发布的房源
+	beego.Router("api/v1.0/user/houses", &controllers.UserHousesController{}, "get:GetUserHouses")
+
+	// 发布房源路由
 	// 发布房源路由
 	beego.Router("api/v1.0/user/houses", &controllers.HouseController{}, "get:Gethouse")
 

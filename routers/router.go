@@ -35,6 +35,9 @@ func init() {
 	// 发布房源路由
 	// 发布房源路由
 	beego.Router("api/v1.0/user/houses", &controllers.HouseController{}, "get:Gethouse")
+	//请求查看房东/租客订单信息
+	//查看租客信息
+	//beego.Router("api/v1.0/user/orders?role=custom", &controllers.HouseController{}, "get:GetRenetrInfo")
 
 	//退出
 	beego.Router("/api/v1.0/session", &controllers.HouseController{}, "delete:Delete")

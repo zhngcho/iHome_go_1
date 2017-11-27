@@ -33,5 +33,5 @@ func init() {
 	beego.Router("api/v1.0/user/houses", &controllers.HouseController{}, "get:Gethouse")
 
 	//退出
-	beego.Router("/api/v1.0/session", &controllers.HouseController{}, "delect:Delect")
+	beego.Router("/api/v1.0/session", &controllers.HouseController{}, "delete:Delete")
 }

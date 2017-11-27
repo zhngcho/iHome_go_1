@@ -8,7 +8,7 @@ import (
 	//"path"
 )
 
-type HouseInfo struct {
+type HouseInfoResp struct {
 	Address     string `json:"address"`
 	Areaname    string `json:"area_name"`
 	Ctime       string `json:"ctime"`
@@ -21,13 +21,13 @@ type HouseInfo struct {
 	User_avatar string `json:"user_avatar"`
 }
 
-type HousesInfo struct {
-	Houses []HouseInfo `json:"houses`
+type HousesInfoResp struct {
+	Houses []HouseInfoResp `json:"houses`
 }
 type UserHousesResp struct {
-	Errno  string     `json:"errno"`
-	Errmsg string     `json:"errmsg"`
-	Data   HousesInfo `json:"data"`
+	Errno  string         `json:"errno"`
+	Errmsg string         `json:"errmsg"`
+	Data   HousesInfoResp `json:"data"`
 }
 
 type UserHousesController struct {
@@ -63,10 +63,10 @@ func (this *UserHousesController) GetUserHouses() {
 
 	}
 
-	var houses_info []HouseInfo
+	var houses_info []HouseInfoResp
 
 	for _, value := range houses {
-		var house_info HouseInfo
+		var house_info HouseInfoResp
 		house_info.Address = value.Address
 		house_info.Areaname = value.Area.Name
 		house_info.Ctime = value.Ctime.Format("2006-01-02 15:04:05")
@@ -81,7 +81,7 @@ func (this *UserHousesController) GetUserHouses() {
 		houses_info = append(houses_info, house_info)
 	}
 
-	resp.Data = HousesInfo{Houses: houses_info}
+	resp.Data = HousesInfoResp{Houses: houses_info}
 
 	//更新Session
 	this.SetSession("user_id", user_id)

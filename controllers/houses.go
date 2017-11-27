@@ -3,11 +3,24 @@ package controllers
 import (
 	_ "context"
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"iHome_go_1/models"
+	"path"
 	"strconv"
 )
+
+type A1vatarUrl struct {
+	Url string `json:"avatar_url"`
+}
+
+// 上传头像的返回结构
+type A1vatarResp struct {
+	Errno  string     `json:"errno"`
+	Errmsg string     `json:"errmsg"`
+	Data   A1vatarUrl `json:"data"`
+}
 
 type HouseController struct {
 	beego.Controller
@@ -135,4 +148,102 @@ func (this *HouseController) NewHouse() {
 
 	resp.Data = House_id{Id: house_id}
 
+}
+
+func (this *HouseController) Uplodpicture() {
+	resp := A1vatarResp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
+
+	defer this.RetData(&resp)
+	//获取房子的ID
+	HouseId := this.Ctx.Input.Param(":id")
+	//获取文件数据
+	file, header, err := this.GetFile("house_image")
+
+	if err != nil {
+		resp.Errno = models.RECODE_SERVERERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		beego.Info("get file error")
+		return
+	}
+	defer file.Close()
+
+	//创建一个文件的缓冲
+	fileBuffer := make([]byte, header.Size)
+
+	_, err = file.Read(fileBuffer)
+	if err != nil {
+		resp.Errno = models.RECODE_IOERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		beego.Info("read file error")
+		return
+	}
+
+	//home1.jpg
+	suffix := path.Ext(header.Filename) // suffix = ".jpg"
+	groupName, fileId, err1 := models.FDFSUploadByBuffer(fileBuffer, suffix[1:])
+	if err1 != nil {
+		resp.Errno = models.RECODE_IOERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		beego.Info("fdfs upload  file error")
+		return
+	}
+	beego.Debug("groupName:", groupName, " fileId:", fileId)
+	//添加Avatar_url字段到数据库中
+	o := orm.NewOrm()
+
+	House_id, _ := strconv.Atoi(HouseId)
+	OneHouse := models.House{Id: House_id}
+
+	houseImage := models.HouseImage{Url: fileId, House: &OneHouse}
+
+	if _, err := o.Insert(&houseImage); err != nil {
+
+		resp.Errno = models.RECODE_DBERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	//////////////////////房子的图片添加进  图片链接数据库
+	if err := o.Read(&OneHouse); err != nil {
+		resp.Errno = models.RECODE_DBERR
+		fmt.Println("111111111111111111111")
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		return
+	}
+
+	house_image := models.HouseImage{House: &OneHouse, Url: fileId}
+	OneHouse.Images = append(OneHouse.Images, &house_image)
+	//根据house_id 查询house_image 是否为空
+	if OneHouse.Index_image_url == "" {
+		//如果为空 那么就用当前image_url为house的主image_url
+
+		OneHouse.Index_image_url = fileId
+		beego.Debug("set index_image_url ", fileId)
+	}
+
+	//将house_image入库
+	if _, err := o.Insert(&house_image); err != nil {
+		resp.Errno = models.RECODE_DBERR
+		fmt.Println("211111111111111111111")
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		beego.Debug("insert house image error")
+		return
+
+	}
+
+	//添加Avatar_url字段到数据库中
+
+	if _, err := o.Update(&OneHouse); err != nil {
+		resp.Errno = models.RECODE_DBERR
+		fmt.Println("311111111111111111111")
+		resp.Errmsg = models.RecodeText(resp.Errno)
+
+		return
+	}
+
+	//拼接一个完整的路径
+	avatar_url := models.AddDomain2Url(fileId)
+
+	resp.Data.Url = avatar_url
+	return
 }

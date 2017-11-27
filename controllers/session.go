@@ -44,3 +44,10 @@ func (this *SessionController) Get() {
 
 	return
 }
+
+func (this *SessionController) Delete() {
+	this.DelSession("user_id")
+	this.DelSession("name")
+	this.Data["json"] = &SessionResp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
+	this.ServeJSON()
+}

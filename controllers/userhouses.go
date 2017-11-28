@@ -22,7 +22,7 @@ type HouseInfoResp struct {
 }
 
 type HousesInfoResp struct {
-	Houses []HouseInfoResp `json:"houses`
+	Houses []HouseInfoResp `json:"houses"`
 }
 type UserHousesResp struct {
 	Errno  string         `json:"errno"`
@@ -55,7 +55,7 @@ func (this *UserHousesController) GetUserHouses() {
 
 	o := orm.NewOrm()
 	//select * from user where mobile = request_data.mobile
-	if _, err := o.QueryTable("house").Filter("user_id", user_id).All(&houses); err == orm.ErrNoRows {
+	if _, err := o.QueryTable("house").Filter("user_id", user_id).RelatedSel().All(&houses); err == orm.ErrNoRows {
 		//表示没有任何数据
 		resp.Errno = models.RECODE_NODATA
 		resp.Errmsg = models.RecodeText(resp.Errno)
@@ -68,10 +68,15 @@ func (this *UserHousesController) GetUserHouses() {
 	for _, value := range houses {
 		var house_info HouseInfoResp
 		house_info.Address = value.Address
+
+		/////////////////////
+		o.LoadRelated(&value, "Area")
 		house_info.Areaname = value.Area.Name
 		house_info.Ctime = value.Ctime.Format("2006-01-02 15:04:05")
 		house_info.House_id = value.Id
-		house_info.Img_url = value.Images[0].Url
+
+		/////////////////////
+		house_info.Img_url = value.Index_image_url
 		house_info.Order_count = value.Order_count
 		house_info.Price = value.Price
 		house_info.Room_count = value.Room_count

@@ -43,7 +43,7 @@ func init() {
 	beego.Router("api/v1.0/houses", &controllers.HouseController{}, "post:NewHouse")
 
 	//退出
-	beego.Router("/api/v1.0/session", &controllers.HouseController{}, "delete:Delete")
+	beego.Router("/api/v1.0/session", &controllers.SessionController{}, "delete:Delete")
 
 	// 搜索房源
 	beego.Router("/api/v1.0/houses", &controllers.HouseController{}, "get:GetHouseInfo")
@@ -53,5 +53,8 @@ func init() {
 
 	//获取房源详细信息
 	beego.Router("api/v1.0/houses/:id:int", &controllers.HouseDetailController{}, "get:GetHouseDetail")
+
+	//提交订单
+	beego.Router("api/v1.0/orders", &controllers.PostOrderController{}, "post:PostOrder")
 
 }

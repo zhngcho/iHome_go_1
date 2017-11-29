@@ -396,6 +396,9 @@ func (this *UserController) GetOrders() {
 		for index, _ := range order_info {
 			var temp Orders_info
 
+			o.LoadRelated(&order_info[index], "House")
+			o.LoadRelated(&order_info[index], "User")
+
 			temp.Amount = order_info[index].Amount
 			temp.Comment = order_info[index].Comment
 			temp.Ctime = order_info[index].Ctime.String()

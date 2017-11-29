@@ -61,5 +61,9 @@ func init() {
 	beego.Router("api/v1.0/user/orders", &controllers.UserController{}, "get:GetOrders")
 
 	// 添加评论
-	beego.Router("api/v1.0/orders/2/comment", &controllers.Housecomment{}, "put:Comment")
+	//	beego.Router("api/v1.0/orders/2/comment", &controllers.Housecomment{}, "put:Comment")
+
+	// 查看我的订单
+	beego.Router("api/v1.0/orders/:id:int/status", &controllers.AcceptOrderController{}, "put:PutAcceptOrder")
+
 }

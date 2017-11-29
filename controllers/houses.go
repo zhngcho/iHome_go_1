@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/cache"
+	_ "github.com/astaxie/beego/cache"
 	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/orm"
 	"iHome_go_1/models"
 	"path"
 	"strconv"
-	"time"
+	_ "time"
 )
 
 type Image_url struct {
@@ -299,21 +299,21 @@ func (this *HouseController) GetHouseInfo() {
 	resp.Data = data
 
 	// 将数据保存到redis中
+	/*
+		json_data, err := json.Marshal(data)
+		if err != nil {
+			beego.Info("解码失败")
+			beego.Info(err)
+			return
+		}
 
-	json_data, err := json.Marshal(data)
-	if err != nil {
-		beego.Info("解码失败")
-		beego.Info(err)
-		return
-	}
-
-	err = cache_conn.Put("query_houses", json_data, time.Second*3600)
-	if err != nil {
-		beego.Info("数据存储redis失败")
-	} else {
-		beego.Info("数据存储redis成功!!")
-	}
-
+		err = cache_conn.Put("query_houses", json_data, time.Second*3600)
+		if err != nil {
+			beego.Info("数据存储redis失败")
+		} else {
+			beego.Info("数据存储redis成功!!")
+		}
+	*/
 	return
 
 }

@@ -70,6 +70,8 @@ func (this *HouseDetailController) GetHouseDetail() {
 	//从当前Session中得到当前客户端的user_id
 	user_id := this.GetSession("user_id")
 
+	fmt.Printf("user_id:%+v\n", user_id)
+
 	//从url中得到房屋id
 	house_id_str := this.Ctx.Input.Param(":id")
 	house_id, _ := strconv.Atoi(house_id_str)
@@ -118,6 +120,7 @@ func (this *HouseDetailController) GetHouseDetail() {
 	o.LoadRelated(&house, "Orders")
 
 	fmt.Printf("house: %+v\n", house)
+	fmt.Printf("house.User: %+v\n", house.User)
 
 	house_info.User_id = user_id.(int)
 	house_info.House.Acreage = house.Acreage
@@ -131,7 +134,7 @@ func (this *HouseDetailController) GetHouseDetail() {
 		comment_value.Comment = value.Comment
 		comment_value.Ctime = value.Ctime.Format("2006-01-02 15:04:05")
 
-		o.LoadRelated(&value, "User")
+		//o.LoadRelated(&value, "User")
 		comment_value.User_name = value.User.Name
 		comments_value = append(comments_value, comment_value)
 	}
@@ -176,6 +179,7 @@ func (this *HouseDetailController) GetHouseDetail() {
 		return
 	}
 
+	fmt.Printf("house_info: %+v\n", house_info)
 	//更新Session
 	this.SetSession("user_id", user_id)
 

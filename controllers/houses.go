@@ -5,10 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/cache"
+	_ "github.com/astaxie/beego/cache/redis"
 	"github.com/astaxie/beego/orm"
 	"iHome_go_1/models"
 	"path"
 	"strconv"
+	"time"
 )
 
 type Image_url struct {
@@ -190,7 +193,7 @@ func (this *HouseController) GetHouseInfo() {
 	this.Ctx.Input.Bind(&sk, "sk")
 	this.Ctx.Input.Bind(&p, "p")
 
-	beego.Info("测试!!!")
+	beego.Info("测试绑定数据如下!!!")
 	fmt.Println(aid, sd, ed, sk, p)
 
 	// 1、判断开始时间一定要小于结束时间
@@ -202,6 +205,30 @@ func (this *HouseController) GetHouseInfo() {
 	}
 
 	// 3、尝试从redis数据库中获取数据,有的话返回数据
+	cache_conn, err := cache.NewCache("redis", `{"key":"Redis","conn":"127.0.0.1:6379","dbNum":"0"}`)
+	if err != nil {
+		// 请求连接出错
+		beego.Info("连接redis error")
+		resp.Errno = models.RECODE_DATAERR
+		resp.Errmsg = models.RecodeText(resp.Errno)
+		beego.Info(err)
+		return
+	}
+
+	var data_houses interface{}
+	query_houses_data := cache_conn.Get("query_houses")
+	if query_houses_data != nil {
+
+		beego.Info("读取 redis 数据成功!")
+
+		err := json.Unmarshal(query_houses_data.([]byte), &data_houses)
+		if err != nil {
+			beego.Info("解码失败")
+			return
+		}
+		resp.Data = data_houses
+		return
+	}
 
 	// 4、没有从mysql数据库中查询数据，获取
 	o := orm.NewOrm()
@@ -220,6 +247,13 @@ func (this *HouseController) GetHouseInfo() {
 	beego.Info(num)
 
 	// 5、返回结果
+
+	/* -------------------------------------------*/
+	/**********************************************
+	/*			此方式也可行
+	/*
+	/* -------------------------------------------*/
+
 	/*
 		ret_data := make([]Query_data, num)
 
@@ -235,7 +269,7 @@ func (this *HouseController) GetHouseInfo() {
 			ret_data[index].Title = value.Title
 			ret_data[index].User_Avatar = value.User.Name
 		}
-	*/ /*
+
 		var base_data Base_info
 		base_data.Houses = &ret_data
 		base_data.Current_page = 1
@@ -243,6 +277,7 @@ func (this *HouseController) GetHouseInfo() {
 		resp.Data = &base_data
 
 	*/
+
 	total_page := int(num)/models.HOUSE_LIST_PAGE_CAPACITY + 1
 	house_page := 1
 
@@ -263,6 +298,20 @@ func (this *HouseController) GetHouseInfo() {
 	resp.Data = data
 
 	// 将数据保存到redis中
+
+	json_data, err := json.Marshal(data)
+	if err != nil {
+		beego.Info("解码失败")
+		beego.Info(err)
+		return
+	}
+
+	err = cache_conn.Put("query_houses", json_data, time.Second*3600)
+	if err != nil {
+		beego.Info("数据存储redis失败")
+	} else {
+		beego.Info("数据存储redis成功!!")
+	}
 
 	return
 

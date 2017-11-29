@@ -106,7 +106,7 @@ func (this *House) To_house_info() interface{} {
 		"room_count":  this.Room_count,
 		"order_count": this.Order_count,
 		"address":     this.Address,
-		"user_avatar": AddDomain2Url(this.User.Avatar_url),
+		"user_avatar": this.User.Avatar_url,
 		"ctime":       this.Ctime.Format("2006-01-02 15:04:05"),
 	}
 

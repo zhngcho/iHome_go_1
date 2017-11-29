@@ -401,12 +401,12 @@ func (this *UserController) GetOrders() {
 
 			temp.Amount = order_info[index].Amount
 			temp.Comment = order_info[index].Comment
-			temp.Ctime = order_info[index].Ctime.String()
+			temp.Ctime = order_info[index].Ctime.Format("2006-01-02 15:04:05")
 			temp.Days = order_info[index].Days
-			temp.End_Date = order_info[index].End_date.String()
+			temp.End_Date = order_info[index].End_date.Format("2006-01-02 15:04:05")
 			temp.Img_Url = order_info[index].House.Index_image_url
 			temp.Order_Id = order_info[index].Id
-			temp.Start_Date = order_info[index].Begin_date.String()
+			temp.Start_Date = order_info[index].Begin_date.Format("2006-01-02 15:04:05")
 			temp.Status = order_info[index].Status
 			temp.Title = order_info[index].House.Title
 

@@ -16,7 +16,7 @@ import (
 type CommentT struct {
 	Comment   string `json:"comment"`
 	Ctime     string `json:"ctime"`
-	User_name string `"user_name"`
+	User_name string `json:"user_name"`
 }
 
 type HouseDetail struct {

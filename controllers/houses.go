@@ -205,31 +205,32 @@ func (this *HouseController) GetHouseInfo() {
 	}
 
 	// 3、尝试从redis数据库中获取数据,有的话返回数据
-	cache_conn, err := cache.NewCache("redis", `{"key":"Redis","conn":"127.0.0.1:6379","dbNum":"0"}`)
-	if err != nil {
-		// 请求连接出错
-		beego.Info("连接redis error")
-		resp.Errno = models.RECODE_DATAERR
-		resp.Errmsg = models.RecodeText(resp.Errno)
-		beego.Info(err)
-		return
-	}
-
-	var data_houses interface{}
-	query_houses_data := cache_conn.Get("query_houses")
-	if query_houses_data != nil {
-
-		beego.Info("读取 redis 数据成功!")
-
-		err := json.Unmarshal(query_houses_data.([]byte), &data_houses)
+	/*
+		cache_conn, err := cache.NewCache("redis", `{"key":"Redis","conn":"127.0.0.1:6379","dbNum":"0"}`)
 		if err != nil {
-			beego.Info("解码失败")
+			// 请求连接出错
+			beego.Info("连接redis error")
+			resp.Errno = models.RECODE_DATAERR
+			resp.Errmsg = models.RecodeText(resp.Errno)
+			beego.Info(err)
 			return
 		}
-		resp.Data = data_houses
-		return
-	}
 
+		var data_houses interface{}
+		query_houses_data := cache_conn.Get("query_houses")
+		if query_houses_data != nil {
+
+			beego.Info("读取 redis 数据成功!")
+
+			err := json.Unmarshal(query_houses_data.([]byte), &data_houses)
+			if err != nil {
+				beego.Info("解码失败")
+				return
+			}
+			resp.Data = data_houses
+			return
+		}
+	*/
 	// 4、没有从mysql数据库中查询数据，获取
 	o := orm.NewOrm()
 	qs := o.QueryTable("house")

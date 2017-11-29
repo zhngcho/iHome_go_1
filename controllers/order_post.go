@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
 	"iHome_go_1/models"
@@ -58,15 +59,15 @@ func (this *PostOrderController) PostOrder() {
 
 	//校验信息
 
-	if request_data.HouseId == "" || request_data.StartDate == "" || request_data.EndDate == "" || request_data.StartDate >= request_data.EndDate {
+	if request_data.HouseId == "" || request_data.StartDate == "" || request_data.EndDate == "" || request_data.StartDate > request_data.EndDate {
 		resp.Errno = models.RECODE_REQERR
 		resp.Errmsg = models.RecodeText(resp.Errno)
 		return
 	}
 
 	//得到一共入住的天数
-	startTime, _ := time.Parse("2006-01_02 15:04:05", request_data.StartDate)
-	endTime, _ := time.Parse("2006-01_02 15:04:05", request_data.EndDate)
+	startTime, _ := time.Parse("2006-01-02 15:04:05", request_data.StartDate+" 00:00:00")
+	endTime, _ := time.Parse("2006-01-02 15:04:05", request_data.EndDate+" 00:00:00")
 	durationDays := int(endTime.Sub(startTime).Hours()/24 + 1)
 
 	//2.根据house_id查找相关房源信息
@@ -111,8 +112,9 @@ func (this *PostOrderController) PostOrder() {
 	houseorder.Days = durationDays
 	houseorder.House_price = house.Price
 	houseorder.Amount = house.Price * durationDays
-	houseorder.Status = "WAIT_ACCEPT"
+	houseorder.Status = models.ORDER_STATUS_WAIT_ACCEPT
 	//////houseorder.Comment = //////////////////////////////////nil
+	fmt.Printf("houseorder to be inserted %+v\n", houseorder)
 
 	id, err := o.Insert(&houseorder)
 	if err != nil {

@@ -65,16 +65,16 @@ type UserController struct {
 
 // 返回查看订单信息结构体
 type Orders_info struct {
-	Amount     int    `json : "amount"`
-	Comment    string `json : "comment"`
-	Ctime      string `json : "ctime"`
-	Days       int    `json : "days"`
-	End_Date   string `json : "end_date"`
-	Img_Url    string `json : "img_url"`
-	Order_Id   int    `json : "order_id"`
-	Start_Date string `json : "start_date"`
-	Status     string `json : "status"`
-	Title      string `json : "title"`
+	Amount     int    `json:"amount"`
+	Comment    string `json:"comment"`
+	Ctime      string `json:"ctime"`
+	Days       int    `json:"days"`
+	End_Date   string `json:"end_date"`
+	Img_Url    string `json:"img_url"`
+	Order_Id   int    `json:"order_id"`
+	Start_Date string `json:"start_date"`
+	Status     string `json:"status"`
+	Title      string `json:"title"`
 }
 
 func (this *UserController) RetData(resp interface{}) {
@@ -323,6 +323,10 @@ func (this *UserController) GetUser() {
 
 }
 
+type Orders_data struct {
+	Orders []Orders_info `json:"orders"`
+}
+
 // api/v1.0/user/orders?role=custom
 // 查看我的订单
 func (this *UserController) GetOrders() {
@@ -339,7 +343,7 @@ func (this *UserController) GetOrders() {
 	this.Ctx.Input.Bind(&role, "role")
 
 	// 返回信息变量
-	var data []Orders_info
+	var data Orders_data
 	var order_info []models.OrderHouse
 	var row int64
 	var err error
@@ -390,16 +394,20 @@ func (this *UserController) GetOrders() {
 	if row > 0 {
 		// 根据house_id查询房屋订单表
 		for index, _ := range order_info {
-			data[index].Amount = order_info[index].Amount
-			data[index].Comment = order_info[index].Comment
-			data[index].Ctime = order_info[index].Ctime.String()
-			data[index].Days = order_info[index].Days
-			data[index].End_Date = order_info[index].End_date.String()
-			data[index].Img_Url = order_info[index].House.Index_image_url
-			data[index].Order_Id = order_info[index].Id
-			data[index].Start_Date = order_info[index].Begin_date.String()
-			data[index].Status = order_info[index].Status
-			data[index].Title = order_info[index].House.Title
+			var temp Orders_info
+
+			temp.Amount = order_info[index].Amount
+			temp.Comment = order_info[index].Comment
+			temp.Ctime = order_info[index].Ctime.String()
+			temp.Days = order_info[index].Days
+			temp.End_Date = order_info[index].End_date.String()
+			temp.Img_Url = order_info[index].House.Index_image_url
+			temp.Order_Id = order_info[index].Id
+			temp.Start_Date = order_info[index].Begin_date.String()
+			temp.Status = order_info[index].Status
+			temp.Title = order_info[index].House.Title
+
+			data.Orders = append(data.Orders, temp)
 		}
 	}
 

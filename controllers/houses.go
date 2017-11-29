@@ -11,15 +11,15 @@ import (
 	"strconv"
 )
 
-type A1vatarUrl struct {
-	Url string `json:"avatar_url"`
+type Image_url struct {
+	Url string `json:"url"`
 }
 
 // 上传头像的返回结构
 type A1vatarResp struct {
-	Errno  string     `json:"errno"`
-	Errmsg string     `json:"errmsg"`
-	Data   A1vatarUrl `json:"data"`
+	Errno  string    `json:"errno"`
+	Errmsg string    `json:"errmsg"`
+	Data   Image_url `json:"data"`
 }
 
 type HouseController struct {
@@ -268,16 +268,6 @@ func (this *HouseController) GetHouseInfo() {
 
 }
 
-// 上传头像的返回结构
-type A1vatarResp struct {
-	Errno  string     `json:"errno"`
-	Errmsg string     `json:"errmsg"`
-	Data   A1vatarUrl `json:"data"`
-}
-type A1vatarUrl struct {
-	Url string `json:"avatar_url"`
-}
-
 // 上传图片
 func (this *HouseController) Uplodpicture() {
 	resp := A1vatarResp{Errno: models.RECODE_OK, Errmsg: models.RecodeText(models.RECODE_OK)}
@@ -335,7 +325,7 @@ func (this *HouseController) Uplodpicture() {
 	//////////////////////房子的图片添加进  图片链接数据库
 	if err := o.Read(&OneHouse); err != nil {
 		resp.Errno = models.RECODE_DBERR
-		fmt.Println("111111111111111111111")
+		fmt.Println("111111111ssss111111111111")
 		resp.Errmsg = models.RecodeText(resp.Errno)
 		return
 	}

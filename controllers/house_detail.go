@@ -125,7 +125,7 @@ func (this *HouseDetailController) GetHouseDetail() {
 	house_info.House.Beds = house.Beds
 	house_info.House.Capacity = house.Capacity
 
-	var comments_value []CommentT
+	comments_value := make([]CommentT, 1)
 	for _, value := range house.Orders {
 		var comment_value CommentT
 		comment_value.Comment = value.Comment
@@ -138,7 +138,7 @@ func (this *HouseDetailController) GetHouseDetail() {
 
 	house_info.House.Comments = comments_value
 
-	house_info.House.Deposit = house.Deposit
+	house_info.House.Deposit = house.Deposit * 100
 
 	var facility_value []int
 	for _, value := range house.Facilities {
@@ -156,7 +156,7 @@ func (this *HouseDetailController) GetHouseDetail() {
 
 	house_info.House.Max_days = house.Max_days
 	house_info.House.Min_days = house.Min_days
-	house_info.House.Price = house.Price
+	house_info.House.Price = house.Price * 100
 	house_info.House.Room_count = house.Room_count
 	house_info.House.Title = house.Title
 	house_info.House.Unit = house.Unit

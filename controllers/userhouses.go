@@ -78,7 +78,7 @@ func (this *UserHousesController) GetUserHouses() {
 		/////////////////////
 		house_info.Img_url = value.Index_image_url
 		house_info.Order_count = value.Order_count
-		house_info.Price = value.Price
+		house_info.Price = value.Price * 100
 		house_info.Room_count = value.Room_count
 		house_info.Title = value.Title
 		house_info.User_avatar = value.User.Avatar_url

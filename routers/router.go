@@ -66,4 +66,6 @@ func init() {
 	// 查看我的订单
 	beego.Router("api/v1.0/orders/:id:int/status", &controllers.AcceptOrderController{}, "put:PutAcceptOrder")
 
+	//首页index
+	beego.Router("api/v1.0/houses/index", &controllers.IndexController{}, "get:GetHouseInfoIndex")
 }

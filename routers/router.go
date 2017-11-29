@@ -57,4 +57,6 @@ func init() {
 	//提交订单
 	beego.Router("api/v1.0/orders", &controllers.PostOrderController{}, "post:PostOrder")
 
+	// 查看我的订单
+	beego.Router("api/v1.0/user/orders", &controllers.UserController{}, "get:GetOrders")
 }
